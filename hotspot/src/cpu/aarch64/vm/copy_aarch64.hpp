@@ -34,7 +34,6 @@
 # include "copy_linux_aarch64.inline.hpp"
 #endif
 
-
 static void pd_fill_to_words(HeapWord* tohw, size_t count, juint value) {
   julong* to = (julong*) tohw;
   julong  v  = ((julong) value << 32) | value;

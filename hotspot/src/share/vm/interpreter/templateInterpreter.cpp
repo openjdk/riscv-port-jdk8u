@@ -23,6 +23,7 @@
  */
 
 #include "precompiled.hpp"
+#include "compiler/disassembler.hpp"
 #include "interpreter/interpreter.hpp"
 #include "interpreter/interpreterGenerator.hpp"
 #include "interpreter/interpreterRuntime.hpp"
@@ -30,7 +31,7 @@
 
 #ifndef CC_INTERP
 
-# define __ _masm->
+#define __ Disassembler::hook<InterpreterMacroAssembler>(__FILE__, __LINE__, _masm)->
 
 void TemplateInterpreter::initialize() {
   if (_code != NULL) return;
@@ -505,13 +506,35 @@ void TemplateInterpreterGenerator::set_short_entry_points(Template* t, address& 
     case stos:
       ShouldNotReachHere();  // btos/ctos/stos should use itos.
       break;
-    case atos: vep = __ pc(); __ pop(atos); aep = __ pc(); generate_and_dispatch(t); break;
-    case itos: vep = __ pc(); __ pop(itos); iep = __ pc(); generate_and_dispatch(t); break;
-    case ltos: vep = __ pc(); __ pop(ltos); lep = __ pc(); generate_and_dispatch(t); break;
-    case ftos: vep = __ pc(); __ pop(ftos); fep = __ pc(); generate_and_dispatch(t); break;
-    case dtos: vep = __ pc(); __ pop(dtos); dep = __ pc(); generate_and_dispatch(t); break;
-    case vtos: set_vtos_entry_points(t, bep, cep, sep, aep, iep, lep, fep, dep, vep);     break;
-    default  : ShouldNotReachHere();                                                 break;
+    case atos: vep = __ pc();
+                   __ pop(atos);
+                   aep = __ pc();
+                   generate_and_dispatch(t);
+                   break;
+    case itos: vep = __ pc();
+                   __ pop(itos);
+                   iep = __ pc();
+                   generate_and_dispatch(t);
+                   break;
+    case ltos: vep = __ pc();
+                   __ pop(ltos);
+                   lep = __ pc();
+                   generate_and_dispatch(t);
+                   break;
+    case ftos: vep = __ pc();
+               __ pop(ftos);
+               fep = __ pc();
+               generate_and_dispatch(t);
+               break;
+    case dtos: vep = __ pc();
+                   __ pop(dtos);
+                   dep = __ pc();
+                   generate_and_dispatch(t);
+                   break;
+    case vtos: set_vtos_entry_points(t, bep, cep, sep, aep, iep, lep, fep, dep, vep);
+                   break;
+    default  : ShouldNotReachHere();
+                   break;
   }
 }
 
