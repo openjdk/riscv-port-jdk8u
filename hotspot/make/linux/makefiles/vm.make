@@ -116,6 +116,22 @@ CXXFLAGS/ostream.o += -D_FILE_OFFSET_BITS=64
 endif # ifneq ($(LP64), 1)
 
 # CFLAGS_WARN holds compiler options to suppress/enable warnings.
+CFLAGS_WARN/compileBroker.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+CFLAGS_WARN/method.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+CFLAGS_WARN/thread.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+CFLAGS_WARN/jni.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+ifeq ($(filter $(DEBUG_LEVEL), slowdebug fastdebug), $(DEBUG_LEVEL))
+  CFLAGS_WARN/classFileParser.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+endif
+ifeq ($(DEBUG_LEVEL), fastdebug)
+  CFLAGS_WARN/concurrentMark.o = $(CFLAGS_WARN/DEFAULT) -Wno-format-overflow
+  CFLAGS_WARN/guardedMemory.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+  CFLAGS_WARN/jfrJniMethodRegistration.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+  CFLAGS_WARN/jfrJvmtiAgent.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+  CFLAGS_WARN/symbolTable.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+  CFLAGS_WARN/type.o = $(CFLAGS_WARN/DEFAULT) -Wno-format-overflow
+  CFLAGS_WARN/bytecodeAssembler.o = $(CFLAGS_WARN/DEFAULT) -Wno-stringop-overflow
+endif
 CFLAGS += $(CFLAGS_WARN/BYFILE)
 
 # Do not use C++ exception handling

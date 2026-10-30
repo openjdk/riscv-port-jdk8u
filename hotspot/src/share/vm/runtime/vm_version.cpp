@@ -32,6 +32,9 @@
 #ifdef TARGET_ARCH_aarch64
 # include "vm_version_aarch64.hpp"
 #endif
+#ifdef TARGET_ARCH_riscv
+# include "vm_version_riscv.hpp"
+#endif
 #ifdef TARGET_ARCH_sparc
 # include "vm_version_sparc.hpp"
 #endif
@@ -197,10 +200,10 @@ const char* Abstract_VM_Version::jre_release_version() {
 #define CPU      IA32_ONLY("x86")                \
                  IA64_ONLY("ia64")               \
                  AMD64_ONLY("amd64")             \
-                 AARCH64_ONLY("aarch64")         \
-                 SPARC_ONLY("sparc")
-#endif // ZERO
-#endif
+                 SPARC_ONLY("sparc")             \
+                 RISCV64_ONLY("riscv64")
+#endif // !ZERO
+#endif // !CPU
 
 const char *Abstract_VM_Version::vm_platform_string() {
   return OS "-" CPU;

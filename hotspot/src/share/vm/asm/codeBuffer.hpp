@@ -246,6 +246,7 @@ class CodeStrings VALUE_OBJ_CLASS_SPEC {
 private:
 #ifndef PRODUCT
   CodeString* _strings;
+  CodeString* _strings_last;
 #ifdef ASSERT
   // Becomes true after copy-out, forbids further use.
   bool _defunct; // Zero bit pattern is "valid", see memset call in decode_env::decode_env
@@ -258,6 +259,7 @@ private:
   void set_null_and_invalidate() {
 #ifndef PRODUCT
     _strings = NULL;
+    _strings_last = NULL;
 #ifdef ASSERT
     _defunct = true;
 #endif
@@ -268,6 +270,7 @@ public:
   CodeStrings() {
 #ifndef PRODUCT
     _strings = NULL;
+    _strings_last = NULL;
 #ifdef ASSERT
     _defunct = false;
 #endif
@@ -368,6 +371,8 @@ class CodeBuffer: public StackObj {
   OopRecorder  _default_oop_recorder;  // override with initialize_oop_recorder
   Arena*       _overflow_arena;
 
+  address      _last_membar;     // used to merge consecutive memory barriers
+
   address      _decode_begin;   // start address for decode
   address      decode_begin();
 
@@ -380,6 +385,7 @@ class CodeBuffer: public StackObj {
     _oop_recorder    = NULL;
     _decode_begin    = NULL;
     _overflow_arena  = NULL;
+    _last_membar     = NULL;
   }
 
   void initialize(address code_start, csize_t code_size) {
@@ -567,6 +573,10 @@ class CodeBuffer: public StackObj {
   OopRecorder* oop_recorder() const   { return _oop_recorder; }
   CodeStrings& strings()              { return _code_strings; }
 
+  address last_membar() const { return _last_membar; }
+  void set_last_membar(address a) { _last_membar = a; }
+  void clear_last_membar() { set_last_membar(NULL); }
+
   void free_strings() {
     if (!_code_strings.is_null()) {
       _code_strings.free(); // sets _strings Null as a side-effect.
@@ -622,6 +632,9 @@ class CodeBuffer: public StackObj {
 #endif
 #ifdef TARGET_ARCH_aarch64
 # include "codeBuffer_aarch64.hpp"
+#endif
+#ifdef TARGET_ARCH_riscv
+# include "codeBuffer_riscv.hpp"
 #endif
 #ifdef TARGET_ARCH_sparc
 # include "codeBuffer_sparc.hpp"

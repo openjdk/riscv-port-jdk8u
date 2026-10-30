@@ -84,6 +84,9 @@ class Disassembler {
 #ifdef TARGET_ARCH_aarch64
 # include "disassembler_aarch64.hpp"
 #endif
+#ifdef TARGET_ARCH_riscv
+# include "disassembler_riscv.hpp"
+#endif
 #ifdef TARGET_ARCH_sparc
 # include "disassembler_sparc.hpp"
 #endif
@@ -107,6 +110,17 @@ class Disassembler {
   static void decode(CodeBlob *cb,               outputStream* st = NULL);
   static void decode(nmethod* nm,                outputStream* st = NULL);
   static void decode(address begin, address end, outputStream* st = NULL, CodeStrings c = CodeStrings());
+  static void _hook(const char* file, int line, class MacroAssembler* masm);
+
+  // This functions makes it easy to generate comments in the generated
+  // interpreter code, by riding on the customary __ macro in the interpreter generator.
+  // See templateTable_x86.cpp for an example.
+  template<class T> inline static T* hook(const char* file, int line, T* masm) {
+    if (PrintInterpreter) {
+      _hook(file, line, masm);
+    }
+    return masm;
+  }
 };
 
 #endif // SHARE_VM_COMPILER_DISASSEMBLER_HPP

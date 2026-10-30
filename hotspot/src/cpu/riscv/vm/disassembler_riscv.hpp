@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2003, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, Red Hat Inc. All rights reserved.
+ * Copyright (c) 2020, 2022, Huawei Technologies Co., Ltd. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,18 +24,15 @@
  *
  */
 
-package sun.jvm.hotspot.debugger;
+#ifndef CPU_RISCV_DISASSEMBLER_RISCV_HPP
+#define CPU_RISCV_DISASSEMBLER_RISCV_HPP
 
-public class MachineDescriptionAARCH64 extends MachineDescriptionTwosComplement implements MachineDescription {
-  public long getAddressSize() {
-    return 8;
-  }
-
-  public boolean isLP64() {
-    return true;
-  }
-
-  public boolean isBigEndian() {
-    return false;
-  }
+static int pd_instruction_alignment() {
+  return 1;
 }
+
+static const char* pd_cpu_opts() {
+  return "";
+}
+
+#endif // CPU_RISCV_DISASSEMBLER_RISCV_HPP

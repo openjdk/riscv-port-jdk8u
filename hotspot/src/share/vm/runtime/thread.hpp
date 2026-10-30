@@ -1054,7 +1054,7 @@ class JavaThread: public Thread {
   address last_Java_pc(void)                     { return _anchor.last_Java_pc(); }
 
   // Safepoint support
-#if !(defined(PPC64) || defined(AARCH64))
+#if !(defined(PPC64) || defined(AARCH64) || defined(RISCV64))
   JavaThreadState thread_state() const           { return _thread_state; }
   void set_thread_state(JavaThreadState s)       { _thread_state = s;    }
 #else
@@ -1713,6 +1713,9 @@ public:
 #endif
 #ifdef TARGET_OS_ARCH_linux_aarch64
 # include "thread_linux_aarch64.hpp"
+#endif
+#ifdef TARGET_OS_ARCH_linux_riscv
+# include "thread_linux_riscv.hpp"
 #endif
 #ifdef TARGET_OS_ARCH_linux_sparc
 # include "thread_linux_sparc.hpp"
