@@ -421,6 +421,9 @@ class relocInfo VALUE_OBJ_CLASS_SPEC {
 #ifdef TARGET_ARCH_aarch64
 # include "relocInfo_aarch64.hpp"
 #endif
+#ifdef TARGET_ARCH_riscv
+# include "relocInfo_riscv.hpp"
+#endif
 #ifdef TARGET_ARCH_sparc
 # include "relocInfo_sparc.hpp"
 #endif
@@ -1162,6 +1165,11 @@ class runtime_call_Relocation : public CallRelocation {
 // sufficient space for a far branch. Needed on PPC.
 class trampoline_stub_Relocation : public Relocation {
   relocInfo::relocType type() { return relocInfo::trampoline_stub_type; }
+
+#ifdef USE_TRAMPOLINE_STUB_FIX_OWNER
+  void pd_fix_owner_after_move();
+  void fix_relocation_after_move(const CodeBuffer* src, CodeBuffer* dest);
+#endif
 
  public:
   static RelocationHolder spec(address static_call) {

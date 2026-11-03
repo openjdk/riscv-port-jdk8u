@@ -443,6 +443,9 @@ enum RTMState {
 #ifdef TARGET_ARCH_aarch64
 # include "globalDefinitions_aarch64.hpp"
 #endif
+#ifdef TARGET_ARCH_riscv
+# include "globalDefinitions_riscv.hpp"
+#endif
 #ifdef TARGET_ARCH_sparc
 # include "globalDefinitions_sparc.hpp"
 #endif
@@ -1138,9 +1141,6 @@ inline intptr_t bitfield(intptr_t x, int start_bit_no, int field_length) {
 #undef min
 #endif
 
-#define max(a,b) Do_not_use_max_use_MAX2_instead
-#define min(a,b) Do_not_use_min_use_MIN2_instead
-
 // It is necessary to use templates here. Having normal overloaded
 // functions does not work because it is necessary to provide both 32-
 // and 64-bit overloaded functions, which does not work, and having
@@ -1254,7 +1254,7 @@ inline bool is_even(intx x) { return !is_odd(x); }
 
 // abs methods which cannot overflow and so are well-defined across
 // the entire domain of integer types.
-static inline unsigned int uabs(unsigned int n) {
+static inline unsigned int g_uabs(unsigned int n) {
   union {
     unsigned int result;
     int value;
@@ -1263,7 +1263,7 @@ static inline unsigned int uabs(unsigned int n) {
   if (value < 0) result = 0-result;
   return result;
 }
-static inline julong uabs(julong n) {
+static inline julong g_uabs(julong n) {
   union {
     julong result;
     jlong value;
@@ -1272,8 +1272,8 @@ static inline julong uabs(julong n) {
   if (value < 0) result = 0-result;
   return result;
 }
-static inline julong uabs(jlong n) { return uabs((julong)n); }
-static inline unsigned int uabs(int n) { return uabs((unsigned int)n); }
+static inline julong g_uabs(jlong n) { return g_uabs((julong)n); }
+static inline unsigned int g_uabs(int n) { return g_uabs((unsigned int)n); }
 
 // "to" should be greater than "from."
 inline intx byte_size(void* from, void* to) {
