@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2022, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -78,14 +78,22 @@ combination of ptrace and /proc calls.
 #endif
 #if defined(aarch64)
 #define user_regs_struct user_pt_regs
+#elif defined(arm)
+#include <asm/ptrace.h>
+#define user_regs_struct  pt_regs
+#elif defined(riscv64)
+#include <asm/ptrace.h>
 #endif
 
 // This C bool type must be int for compatibility with Linux calls and
-// it would be a mistake to equivalence it to C++ bool on many platforms
-
+// it would be a mistake to equivalence it to C++ bool on many platforms.
+// C23 makes bool/true/false keywords, so only provide the typedef for
+// pre-C23 C and for C++ (where none of the three names are macros).
+#if !defined(__cplusplus) && (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L)
 typedef int bool;
 #define true  1
 #define false 0
+#endif
 
 struct ps_prochandle;
 
